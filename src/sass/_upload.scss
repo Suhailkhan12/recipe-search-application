@@ -3,9 +3,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100rem;
+  width: 85vw;
   background-color: white;
-  border-radius: 9px;
+
+  max-height: 95vh; /* Responsive max height */
+  overflow-y: auto; /* Scroll when content is too tall */
 
   padding: 5rem 6rem;
   box-shadow: 0 4rem 6rem rgba(0, 0, 0, 0.25);
@@ -22,6 +24,19 @@
     cursor: pointer;
     border: none;
     background: none;
+  }
+}
+
+.ingredient-row {
+  margin-top: 2rem;
+}
+
+.ingredient-row-inp-dis {
+  display: flex;
+
+  input[type='number'],
+  input[type='text'] {
+    margin: 2px;
   }
 }
 

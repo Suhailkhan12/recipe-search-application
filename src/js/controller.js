@@ -5,6 +5,7 @@ import resultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
 import bookmarksView from './views/bookmarksView.js';
 import addRecipeView from './views/addRecipeView.js';
+import { TIMEOUT_FORM_SHOW_AGAIN } from './config.js';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -111,11 +112,14 @@ const controlAddRecipe = async function (newRecipe) {
 
     //close form
     setTimeout(function () {
-      addRecipeView.toggleWindow();
-    }, 2500);
+      addRecipeView.toggleWindow(false);
+    }, TIMEOUT_FORM_SHOW_AGAIN * 1000);
   } catch (err) {
     console.error('*', err);
     addRecipeView.renderError(err.message);
+
+    addRecipeView._window.classList.remove('hidden');
+    addRecipeView._overlay.classList.remove('hidden');
   }
 };
 
@@ -127,7 +131,6 @@ const init = function () {
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerAddBookmark(controlAddBookmark);
   addRecipeView.addHandlerUpload(controlAddRecipe);
-  console.log('Recipe Application');
 };
 
 init();

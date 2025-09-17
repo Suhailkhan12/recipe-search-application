@@ -121,38 +121,26 @@ export const uploadRecipe = async function (newRecipe) {
     // prettier-ignore
     const VALID_UNITS = ['kg','g','ml','l','tsp','tbsp','cup','cups','oz','lb','pinch',];
 
-    const rawIngredients = {};
-
-    Object.entries(newRecipe).forEach(([key, value]) => {
-      if (
-        key.startsWith('quantity-') ||
-        key.startsWith('unit-') ||
-        key.startsWith('description-')
-      ) {
-        const [, index] = key.split('-');
-        if (!rawIngredients[index]) rawIngredients[index] = {};
-        if (key.startsWith('quantity-')) rawIngredients[index].quantity = value;
-        if (key.startsWith('unit-')) rawIngredients[index].unit = value;
-        if (key.startsWith('description-'))
-          rawIngredients[index].description = value;
-      }
-    });
-
-    const ingredients = Object.values(rawIngredients)
-      // .filter(ing => ing.description && ing.description.trim() !== '') // Keep only valid ones
+    const ingredients = Object.entries(newRecipe)
+      .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
       .map(ing => {
-        const quantity = ing.quantity?.trim();
-        const unit = ing.unit?.trim();
-        const description = ing.description?.trim();
+        const ingArr = ing[1].split(',').map(el => el.trim());
 
-        if (quantity.length === 0) throw new Error(`Please enter quantity`);
+        if (ingArr.length !== 3)
+          throw new Error(
+            'Wrong ingredient format. Please use the correct format: quantity, unit, description'
+          );
 
+        let [quantity, unit, description] = ingArr;
+
+        // Validate quantity
         if (quantity && isNaN(quantity)) {
           throw new Error(
             `Invalid quantity "${quantity}". It must be a number.`
           );
         }
 
+        // Validate unit
         if (unit && !VALID_UNITS.includes(unit.toLowerCase())) {
           throw new Error(
             `Invalid unit "${unit}". Allowed units are: ${VALID_UNITS.join(
@@ -167,8 +155,6 @@ export const uploadRecipe = async function (newRecipe) {
           description,
         };
       });
-
-    console.log(ingredients);
 
     const recipe = {
       title: newRecipe.title,
@@ -190,64 +176,33 @@ export const uploadRecipe = async function (newRecipe) {
   }
 };
 
-// export const uploadRecipe = async function (newRecipe) {
-//   try {
-//     // prettier-ignore
-//     const VALID_UNITS = ['kg','g','ml','l','tsp','tbsp','cup','cups','oz','lb','pinch',];
+// const ingredients = Object.entries(newRecipe)
+// .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
+// .map(ing => {
+//   // const ingArr = ing[1].replaceAll(' ', '').split(',');
+//   const ingArr = ing[1].split(',').map(el => el.trim());
 
-//     const ingredients = Object.entries(newRecipe)
-//       .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
-//       .map(ing => {
-//         const ingArr = ing[1].split(',').map(el => el.trim());
+//   if (ingArr.length !== 3)
+//     throw new Error(
+//       'Wrong ingredient format, please use the correct format'
+//     );
 
-//         if (ingArr.length !== 3)
-//           throw new Error(
-//             'Wrong ingredient format. Please use the correct format: quantity, unit, description'
-//           );
+//   const [quantity, unit, description] = ingArr;
+//   return { quantity: quantity ? +quantity : null, unit, description };
+// });
 
-//         let [quantity, unit, description] = ingArr;
-
-//         // Validate quantity
-//         if (quantity && isNaN(quantity)) {
-//           throw new Error(
-//             `Invalid quantity "${quantity}". It must be a number.`
-//           );
-//         }
-
-//         // Validate unit
-//         if (unit && !VALID_UNITS.includes(unit.toLowerCase())) {
-//           throw new Error(
-//             `Invalid unit "${unit}". Allowed units are: ${VALID_UNITS.join(
-//               ', '
-//             )}`
-//           );
-//         }
-
-//         return {
-//           quantity: quantity ? +quantity : null,
-//           unit,
-//           description,
-//         };
-//       });
-
-//     const recipe = {
-//       title: newRecipe.title,
-//       source_url: newRecipe.sourceUrl,
-//       image_url: newRecipe.image,
-//       publisher: newRecipe.publisher,
-//       cooking_time: +newRecipe.cookingTime,
-//       servings: +newRecipe.servings,
-//       ingredients,
-//     };
-
-//     console.log('recipe in model', recipe);
-
-//     const data = await AJAX(`${API_URL}?key=${API_KEY_FORKIFY}`, recipe);
-
-//     state.recipe = createRecipeObject(data);
-
-//     addBookmark(state.recipe);
-//   } catch (err) {
-//     throw err;
-//   }
+// const recipe = {
+// title: newRecipe.title,
+// source_url: newRecipe.sourceUrl,
+// image_url: newRecipe.image,
+// publisher: newRecipe.publisher,
+// cooking_time: +newRecipe.cookingTime,
+// servings: +newRecipe.servings,
+// ingredients,
 // };
+
+// const data = await AJAX(`${API_URL}?key=${API_KEY_FORKIFY}`, recipe);
+
+// state.recipe = createRecipeObject(data);
+
+// addBookmark(state.recipe);

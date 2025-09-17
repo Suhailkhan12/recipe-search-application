@@ -36,6 +36,10 @@ html {
   }
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 body {
   font-family: 'Nunito Sans', sans-serif;
   font-weight: 400;

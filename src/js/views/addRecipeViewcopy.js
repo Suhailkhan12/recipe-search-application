@@ -1,5 +1,4 @@
 import View from './View';
-import icons from 'url:../../img/icons.svg';
 import { TIMEOUT_FORM_SHOW_AGAIN } from '../config';
 
 class AddRecipeView extends View {
@@ -9,52 +8,20 @@ class AddRecipeView extends View {
   _overlay = document.querySelector('.overlay');
   _btnOpen = document.querySelector('.nav__btn--add-recipe');
   _btnClose = document.querySelector('.btn--close-modal');
-  _ingredientCount = 0;
 
   constructor() {
     super();
     this._addHandlerShowWindow();
     this._addhandlerHideWindow();
-    this._initIngredientFieldHandlers();
-  }
-
-  _createIngredientFields(id = this._ingredientCount + 1) {
-    this._ingredientCount++;
-    return this._generateIngredientMarup(id);
-  }
-
-  _initIngredientFieldHandlers() {
-    this._parentElement.addEventListener('click', e => {
-      // Handle Add Ingredient
-      const btnAdd = e.target.closest('.btn--add-ingredient');
-      if (btnAdd) {
-        const html = this._createIngredientFields();
-        const container =
-          this._parentElement.querySelector('.ingredients-list');
-        container.insertAdjacentHTML('beforeend', html);
-      }
-
-      // Handle Remove Ingredient
-      if (e.target.classList.contains('btn--remove-ingredient')) {
-        const row = e.target.closest('.ingredient-row');
-        if (row) {
-          row.remove();
-          this._ingredientCount--;
-        }
-      }
-    });
   }
 
   toggleWindow(close = true) {
     this._overlay.classList.toggle('hidden');
     this._window.classList.toggle('hidden');
-    document.body.classList.toggle('no-scroll'); // 🚫 Scroll toggle
     if (!close) {
       setTimeout(() => {
         this.renderForm();
       }, TIMEOUT_FORM_SHOW_AGAIN * 1000);
-
-      this._ingredientCount = 0;
     }
   }
 
@@ -89,20 +56,6 @@ class AddRecipeView extends View {
     });
   }
 
-  _generateIngredientMarup(id) {
-    return `
-    <div class="ingredient-row" data-id="${id}">
-      <label>Ingredient ${id}</label>
-      <div class="ingredient-row-inp-dis">
-      <input name="quantity-${id}" type="number" placeholder="Quantity" step="any" />
-      <input name="unit-${id}" type="text" placeholder="Unit (e.g., g, tbsp)" />
-      <input name="description-${id}" type="text" placeholder="Description" />
-      </div>
-      <button type="button" class="btn btn--remove-ingredient">Remove</button>
-    </div>
-  `;
-  }
-
   _generateMarkupForm() {
     return `
     <div class="upload__column">
@@ -123,19 +76,58 @@ class AddRecipeView extends View {
 
   <div class="upload__column">
     <h3 class="upload__heading">Ingredients</h3>
-    <div class="ingredients-list">
-     
-    </div>
-    <button type="button" class="btn btn--small btn--add-ingredient">+ Add Ingredifent</button>
+    <label>Ingredient 1</label>
+    <input
+      value="0.5,kg,Rice"
+      type="text"
+      required
+      name="ingredient-1"
+      placeholder="Format: 'Quantity,Unit,Description'"
+    />
+    <label>Ingredient 2</label>
+    <input
+      value="1,,Avocado"
+      type="text"
+      name="ingredient-2"
+      placeholder="Format: 'Quantity,Unit,Description'"
+    />
+    <label>Ingredient 3</label>
+    <input
+      value=",,salt"
+      type="text"
+      name="ingredient-3"
+      placeholder="Format: 'Quantity,Unit,Description'"
+    />
+    <label>Ingredient 4</label>
+    <input
+      type="text"
+      name="ingredient-4"
+      placeholder="Format: 'Quantity,Unit,Description'"
+    />
+    <label>Ingredient 5</label>
+    <input
+      type="text"
+      name="ingredient-5"
+      placeholder="Format: 'Quantity,Unit,Description'"
+    />
+    <label>Ingredient 6</label>
+    <input
+      type="text"
+      name="ingredient-6"
+      placeholder="Format: 'Quantity,Unit,Description'"
+    />
+  </div>
 
   <button class="btn upload__btn">
     <svg>
-      <use href="${icons}#icon-upload-cloud"></use>
+      <use href="src/img/icons.svg#icon-upload-cloud"></use>
     </svg>
     <span>Upload</span>
   </button>
     `;
   }
+
+  //   _generateMarkup() {}
 }
 
 export default new AddRecipeView();
