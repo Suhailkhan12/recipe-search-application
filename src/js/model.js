@@ -168,8 +168,6 @@ export const uploadRecipe = async function (newRecipe) {
         };
       });
 
-    console.log(ingredients);
-
     const recipe = {
       title: newRecipe.title,
       source_url: newRecipe.sourceUrl,
